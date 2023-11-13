@@ -11,7 +11,7 @@ function Signup(){
      const [pass,setPass]=useState("");
 
      const log=async (nam)=>{
-        const response = await fetch(`http://localhost:5000/api/auth/createuser`, {
+        const response = await fetch(`https://inoteweb.onrender.com/api/auth/createuser`, {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         headers: {
           "Content-Type": "application/json"
