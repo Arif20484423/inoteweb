@@ -5,8 +5,9 @@ const app = express()
 const port = 5000
 
 
+const corsOptions={"origin":"https://inoteweb-app.onrender.com/login",}
 app.use(express.json())
-app.use(cors());
+app.use(cors(corsOptions));
 app.use('/api/auth',require('./Routes/auth'))
 app.use('/api/notes',require('./Routes/notes'))
 app.use('/api/notes',require('./Routes/notes'))
