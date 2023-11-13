@@ -1,0 +1,15 @@
+{
+  "name": "inote-web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "install-server": "cd backend && npm install",
+    "start-server":"cd backend && node index",
+    "install-inoteweb":"cd inoteweb && npm install",
+    "build-inoteweb":"cd inoteweb && npm run build",
+    "start-inoteweb":"cd inoteweb && npm run start"
+  },
+  "author": "Arif",
+  "license": "ISC"
+}
