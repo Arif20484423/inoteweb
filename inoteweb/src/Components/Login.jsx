@@ -1,36 +1,39 @@
-import React, { useState, useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Notecontext from "../context/Notecontext";
+import Loading from "./Loading";
 
-function Signup() {
+function Login() {
   const context = useContext(Notecontext);
   let { setAlertf, setAlertm, showalert } = context;
   let navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const log = async (nam) => {
-    const response = await fetch(
-      `https://inoteweb.onrender.com/api/auth/createuser`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: email, password: pass }),
-      }
-    );
-    const json = await response.json();
+    setLoading((loading) => true);
+
+    const json = await fetch(`https://inoteweb.onrender.com/api/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: email, password: pass }),
+    }).then((response) => {
+      return response.json();
+    });
     console.log(json);
-    if (json.success === "user created") {
+    setLoading((loading) => false);
+    if (json.success) {
       setAlertf("block");
-      setAlertm("Alert : you are signed up and logged in ");
+      setAlertm("Alert : you are logged in ");
       showalert();
       localStorage.setItem("token", json.token);
       navigate("/");
     } else {
       setAlertf("block");
-      setAlertm("Alert : User already exists ");
+      setAlertm("Alert : Invalid Credentials ");
       showalert();
     }
   };
@@ -40,7 +43,7 @@ function Signup() {
     console.log(email + " " + pass);
     log();
   }
-  return (
+  return !loading ? (
     <div
       style={{
         width: "75vw",
@@ -50,6 +53,8 @@ function Signup() {
       }}
     >
       <div className="" style={{}}>
+        <h4>Login to Continue</h4>
+        <h6>If not registered Signup first </h6>
         <div className="mb-3">
           <label htmlFor="exampleFormControlInput1" className="form-label">
             Email address
@@ -81,11 +86,13 @@ function Signup() {
           onClick={handlesubmit}
           className="mx-2 my-1 btn btn-primary"
         >
-          Signup
+          Login
         </button>
       </div>
     </div>
+  ) : (
+    <Loading />
   );
 }
 
-export default Signup;
+export default Login;

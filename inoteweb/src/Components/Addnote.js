@@ -1,10 +1,10 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
 import Notecontext from "../context/Notecontext";
 import Note from "./Note";
-import {useNavigate} from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
+import Loading from "./Loading";
 function Addnote() {
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [utitle, setTitleu] = useState("");
@@ -12,14 +12,15 @@ function Addnote() {
   let ref = useRef(null);
   let refclose = useRef(null);
   let idref = useRef("");
+  const [loading, setLoading] = useState(false);
   let context = useContext(Notecontext);
   let { notes, addNote, getnotes, editNote, setAlertf, setAlertm, showalert } =
     context;
   const handleClick = (event) => {
     event.preventDefault();
-    // console.log(title+" "+desc)
-    // console.log(event.target.name.value+" "+event.target.desc.value)
+    setLoading((loading) => true);
     addNote(title, desc);
+    setLoading((loading) => false);
     setAlertf("block");
     setAlertm("Alert: Note Added successfully");
     showalert();
@@ -33,7 +34,6 @@ function Addnote() {
     console.log(idref.current);
   };
   const handleupdate = () => {
-    // console.log(note.id)
     ref.current.click();
     editNote(idref.current, utitle, udesc);
     setAlertf("block");
@@ -43,14 +43,13 @@ function Addnote() {
     setDescu("");
   };
   useEffect(() => {
-   if(localStorage.getItem('token')){
-    getnotes();
-   }
-   else{
-navigate('/login')
-   }
+    if (localStorage.getItem("token")) {
+      getnotes();
+    } else {
+      navigate("/login");
+    }
   }, []);
-  return (
+  return !loading ? (
     <div>
       <button
         ref={ref}
@@ -146,18 +145,12 @@ navigate('/login')
             rows="1"
             cols="70"
           ></textarea>
-          {/* <input type="title" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"/>
-           */}
-          {/* <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div> */}
         </div>
         <div className="mb-3">
           <label htmlFor="exampleInputPassword1" className="form-label">
             Description
           </label>
-          {/* <input type="description" className="form-control" id="exampleInputPassword1"/>
-           */}
-          {/* <div class="input-group"> */}
-          {/* <span class="input-group-text">With textarea</span> */}
+
           <textarea
             style={{ display: "block", width: "70%" }}
             name="desc"
@@ -169,10 +162,7 @@ navigate('/login')
             value={desc}
           ></textarea>
         </div>
-        {/* <div className="mb-3 form-check">
-    <input type="checkbox" className="form-check-input" id="exampleCheck1"/>
-    <label className="form-check-label" htmlFor="exampleCheck1">Check me out</label>
-  </div> */}
+
         <button
           disabled={title.length < 5 || desc.length < 5}
           onClick={handleClick}
@@ -188,7 +178,7 @@ navigate('/login')
                 <Note
                   key={note._id}
                   id={note._id}
-                  title={note.title}
+                  title={"" + note.title}
                   updatenote={Updatenote}
                   note={note}
                   desc={note.desc}
@@ -199,6 +189,8 @@ navigate('/login')
         </div>
       </form>
     </div>
+  ) : (
+    <Loading />
   );
 }
 export default Addnote;
