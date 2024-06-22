@@ -1,15 +1,16 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Notecontext from "../context/Notecontext";
-
+import Loading from "./Loading";
 function Signup() {
   const context = useContext(Notecontext);
   let { setAlertf, setAlertm, showalert } = context;
   let navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const log = async (nam) => {
+    setLoading((loading) => true);
     const response = await fetch(
       `https://inoteweb.onrender.com/api/auth/createuser`,
       {
@@ -22,6 +23,7 @@ function Signup() {
     );
     const json = await response.json();
     console.log(json);
+    setLoading((loading) => false);
     if (json.success === "user created") {
       setAlertf("block");
       setAlertm("Alert : you are signed up and logged in ");
@@ -40,7 +42,7 @@ function Signup() {
     console.log(email + " " + pass);
     log();
   }
-  return (
+  return !loading ? (
     <div
       style={{
         width: "75vw",
@@ -85,6 +87,8 @@ function Signup() {
         </button>
       </div>
     </div>
+  ) : (
+    <Loading />
   );
 }
 
